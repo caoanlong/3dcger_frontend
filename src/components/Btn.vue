@@ -20,7 +20,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$btn-bg-color: #7D4DFF;
 .normal {
     padding: 0 35px;
     height: 40px;

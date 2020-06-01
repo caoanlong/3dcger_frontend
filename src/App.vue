@@ -2,6 +2,7 @@
 	<div id="app">
 		<HeaderTop/>
 		<router-view/>
+		<notifications group="foo" position="top center"/>
 	</div>
 </template>
 <script>
@@ -16,7 +17,7 @@ export default {
 #app {
 	width: 100%;
 	height: 100%;
-	background-color: #1f1f1f;
+	background-color: #f2f2f2;
 	position: relative;
 	padding-top: $header-height;
 }

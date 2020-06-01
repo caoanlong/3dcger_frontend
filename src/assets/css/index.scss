@@ -1,5 +1,7 @@
 $header-height: 60px;
 $split-width: 700px;
+$primary-color: #7D4DFF;
+$btn-bg-color: $primary-color;
 
 html, body {
 	position: absolute;
@@ -8,4 +10,19 @@ html, body {
 	right: 0;
 	bottom: 0;
 	overflow: hidden;
+}
+
+.eclipsis {
+	overflow: hidden; 
+	text-overflow: ellipsis;  
+	white-space: nowrap;
+}
+
+.clearfix:before,.clearfix:after {
+	content: "";
+	display: block;
+	clear: both;
+}
+.clearfix {
+	zoom: 1;
 }

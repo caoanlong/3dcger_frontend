@@ -9,12 +9,17 @@ const routes = [
 		path: '/',
 		name: 'home',
 		component: Home,
-		redirect: '/editStudio'
+		redirect: '/edit'
 	},
 	{
-		path: '/editStudio',
-		name: 'editStudio',
-		component: () => import('@/views/EditStudio')
+		path: '/edit',
+		name: 'edit',
+		component: () => import('@/views/Edit')
+	},
+	{
+		path: '/info',
+		name: 'info',
+		component: () => import('@/views/Info')
 	}
 ]
 

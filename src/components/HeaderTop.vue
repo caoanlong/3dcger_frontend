@@ -25,7 +25,8 @@ export default {
     left: 0;
     width: 100%;
     height: $header-height;
-    background-color: #111111;
+    background-color: #ffffff;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .05);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,7 +36,7 @@ export default {
         left: 0;
         height: $header-height;
         line-height: $header-height;
-        color: #ffffff;
+        color: #111111;
         font-size: 24px;
         padding-left: 20px;
     }
@@ -43,11 +44,11 @@ export default {
         &-item {
             display: inline-block;
             margin-right: 20px;
-            color: #888888;
+            color: #333333;
             font-size: 16px;
             cursor: pointer;
             &:hover, &.active {
-                color: #ffffff;
+                color: $primary-color;
             }
         }
     }
