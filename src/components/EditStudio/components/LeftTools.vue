@@ -9,15 +9,13 @@
 <script>
 import IconBtn from './IconBtn'
 import '@/utils/OBJLoader'
-const objDefaultParams = {
-    metalness: 1,
-    roughness: 0,
-    aoMapIntensity: 0.5,
-    transparent: true
-}
+import { mapGetters } from 'vuex'
 export default {
     components: {
         IconBtn
+    },
+    computed: {
+        ...mapGetters(['materials'])
     },
     methods: {
         handleImportModel(e) {
@@ -28,10 +26,17 @@ export default {
                 url: window.URL.createObjectURL(file)
             }
             const objLoader = new THREE.OBJLoader()
+            const material = new THREE.MeshStandardMaterial({
+                metalness: 1,
+                roughness: 0,
+                aoMapIntensity: 0.5,
+                transparent: true
+            })
             objLoader.load(obj.url, (group) => {
-                group.children[0].material = new THREE.MeshStandardMaterial(objDefaultParams)
+                group.children[0].material = material
                 this.$store.commit('addMesh', group)
             })
+            this.$store.commit('setMaterial', material)
         }
     },
 }

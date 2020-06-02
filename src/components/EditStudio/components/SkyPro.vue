@@ -38,8 +38,8 @@
                         @change="handleColorChange">
                     </ColorSelect>
                     <template v-else>
-                        <ColorSelect :color="gradientStartColor" @change="handleStartColorChange"/>
-                        <ColorSelect :color="gradientEndColor" @change="handleEndColorChange"/>
+                        <ColorSelect label="Start Color" :color="gradientStartColor" @change="handleStartColorChange"/>
+                        <ColorSelect label="End Color" :color="gradientEndColor" @change="handleEndColorChange"/>
                     </template>
                 </div>
             </div>
@@ -101,10 +101,7 @@ export default {
         handleImgChange(e) {
             const file = e.target.files[0]
             this.$store.commit('setSky', file)
-            setTimeout(() => {
-                console.log(this.skyUrl)
-                this.hdr.src = this.skyUrl
-            }, 100);
+            this.hdr.src = this.skyUrl
         },
         handleExposureChange(val) {
             this.$store.commit('setExposure', val)

@@ -6,7 +6,11 @@
 </template>
 <script>
 import NoSelection from './NoSelection'
+import ScenePro from './ScenePro'
+import RenderPro from './RenderPro'
 import SkyPro from './SkyPro'
+import CameraPro from './CameraPro'
+import ModelPro from './ModelPro'
 import { mapGetters } from 'vuex'
 const OUTLINE_MAP = {
     Scene: 'ScenePro',
@@ -16,7 +20,11 @@ const OUTLINE_MAP = {
 }
 export default {
     components: {
+        ScenePro,
+        RenderPro,
         SkyPro,
+        CameraPro,
+        ModelPro,
         NoSelection
     },
     props: {

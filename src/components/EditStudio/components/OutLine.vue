@@ -22,6 +22,20 @@
                 @click="handleSelect(skyLabel)">
                 {{skyLabel}}
             </div>
+            <!-- <div class="slist-item" 
+                :class="{'active': currentOutlineItem == group.type}" 
+                v-for="(group, i) in (scene ? scene.children : [])" 
+                :key="i"
+                @click="handleSelect(group.type)">
+                {{group.type}}
+            </div>
+            <div class="slist-item" 
+                :class="{'active': currentOutlineItem == mesh.type}" 
+                v-for="(mesh, j) in (scene && scene.children && scene.children.length ? scene.children[0].children[0] : [])" 
+                :key="j"
+                @click="handleSelect(mesh.type)">
+                {{mesh.type}}
+            </div> -->
         </div>
     </div>
 </template>
@@ -41,6 +55,7 @@ export default {
             renderLabel: 'Render',
             cameraLabel: 'Camera',
             skyLabel: 'Sky',
+            modelLabel: 'Model',
         }
     },
     computed: {
@@ -69,8 +84,19 @@ export default {
         color: #cbcbcb;
         font-size: 14px;
         padding: 0 12px;
+        position: relative;
         &:hover {
             background-color: #4a4a4a;
+        }
+        &:before {
+            position: absolute;
+            top: 8px;
+            left: 3px;
+            display: block;
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-top: 2px solid #dddddd;
         }
     }
     .slist {
@@ -80,8 +106,20 @@ export default {
             height: 20px;
             line-height: 20px;
             padding: 0 24px;
+            position: relative;
             &:hover {
                 background-color: #4a4a4a;
+            }
+            &:before {
+                position: absolute;
+                top: 5px;
+                left: 12px;
+                display: block;
+                content: "";
+                width: 6px;
+                height: 6px;
+                border-left: 1px solid #dddddd;
+                border-bottom: 1px solid #dddddd;
             }
         }
     }

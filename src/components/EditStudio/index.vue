@@ -4,8 +4,7 @@
         <div 
             id="view" 
             class="edit-studio-center" 
-            :style="`background:${skyBgColor}`"
-            @click="$store.commit('setCurrentOutlineItem', '')">
+            :style="`background:${skyBgColor}`">
         </div>
         <EditRightBlock class="edit-studio-right" :height="height"/>
     </div>
@@ -28,7 +27,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['scene', 'renderer', 'camera', 'skyBgColor'])
+        ...mapGetters(['scene', 'renderer', 'camera', 'skyBgColor', 'materials'])
     },
     created() {
         window.addEventListener('resize', this.resizeWin, false)
@@ -60,6 +59,10 @@ export default {
         },
         render() {
             this.renderer.render(this.scene, this.camera)
+            for (let i = 0; i < this.materials.length; i++) {
+                const material = this.materials[i]
+                if (material.emitRender) material.emitRender()
+            }
             requestAnimationFrame(this.render)
         },
     },

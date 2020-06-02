@@ -6,9 +6,10 @@ const studio = {
         scene: null,
         renderer: null,
         camera: null,
-        pmremGenerator: null,
 
-        currentOutlineItem: 'Scene',
+        materials: [],
+
+        currentOutlineItem: 'Sky',
 
         exposure: 1,
         gammaFactor: 2.2,
@@ -18,13 +19,17 @@ const studio = {
         skyTexture: null,
         skyBgMode: 'Color',
         skyBgColorMode: 'Gradient',
-        skyBgColor: 'linear-gradient(#b7bdc8, #a5a9b4)'
+        skyBgColor: 'linear-gradient(#b7bdc8, #a5a9b4)',
+
+        fov: 45,
+        near: 0.1,
+        far: 1000
     },
     mutations: {
         init: (state, { el, width, height }) => {
             state.scene = new THREE.Scene()
             state.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-            state.camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000)
+            state.camera = new THREE.PerspectiveCamera(state.fov, width/height, state.near, state.far)
             state.camera.position.set(0, 0, 5)
 
             state.renderer.setSize(width, height)
@@ -42,10 +47,10 @@ const studio = {
 
             el.appendChild(state.renderer.domElement)
 
-            state.pmremGenerator = new THREE.PMREMGenerator(state.renderer)
+            const pmremGenerator = new THREE.PMREMGenerator(state.renderer)
 
             const defaultScene = new EnvironmentScene()
-            const defaultEnvTextture = state.pmremGenerator.fromScene(defaultScene, 0.04).texture
+            const defaultEnvTextture = pmremGenerator.fromScene(defaultScene, 0.04).texture
             state.skyTexture = state.scene.environment = defaultEnvTextture
             defaultScene.dispose()
         },
@@ -72,9 +77,10 @@ const studio = {
                 hdrTexture.minFilter = THREE.NearestFilter
                 hdrTexture.magFilter = THREE.NearestFilter
                 hdrTexture.flipY = true
-
-                const texture = state.pmremGenerator.fromEquirectangular(hdrTexture).texture
+                const pmremGenerator = new THREE.PMREMGenerator(state.renderer)
+                const texture = pmremGenerator.fromEquirectangular(hdrTexture).texture
                 state.skyTexture = state.scene.environment = texture
+                if (state.skyBgMode === 'Sky') state.scene.background = texture
             })
         },
         setSkyBgMode: (state, mode) => {
@@ -113,6 +119,31 @@ const studio = {
                     state.skyBgColor = `linear-gradient(${state.skyBgColor}, ${color})`
                 }
             }
+        },
+        setFov: (state, fov) => {
+            state.fov = fov
+            state.camera.fov = fov
+            state.camera.updateProjectionMatrix()
+        },
+        setNear: (state, near) => {
+            state.near = near
+            state.camera.near = near
+            state.camera.updateProjectionMatrix()
+        },
+        setFar: (state, far) => {
+            state.far = far
+            state.camera.far = far
+            state.camera.updateProjectionMatrix()
+        },
+        setMaterial: (state, material) => {
+            state.materials.push({
+                material,
+                onRender: (renderer, scene, camera) => {
+                    return () => {
+                        renderer.render(scene, camera)
+                    }
+                }
+            })
         }
     }
 }

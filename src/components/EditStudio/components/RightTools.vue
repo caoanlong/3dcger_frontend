@@ -1,8 +1,8 @@
 <template>
     <div class="right-tools">
-        <IconBtn class="import-model" icon="icon_import_model" title="Import Model">
+        <!-- <IconBtn class="import-model" icon="icon_import_model" title="Import Model">
             <input type="file" @change="handleImportModel"/>
-        </IconBtn>
+        </IconBtn> -->
     </div>
 </template>
 
@@ -13,9 +13,9 @@ export default {
         IconBtn
     },
     methods: {
-        handleImportModel() {
-            console.log(fileReader)
-        }
+        // handleImportModel() {
+        //     console.log(fileReader)
+        // }
     },
 }
 </script>

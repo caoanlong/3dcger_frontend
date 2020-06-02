@@ -12,7 +12,7 @@ import RightTools from './components/RightTools'
 import MaterialsView from './components/MaterialsView'
 import Split from './components/Split'
 import MaterialsPro from './components/MaterialsPro'
-const INIT_MATERIALS_HEIGHT = 250
+const INIT_MATERIALS_HEIGHT = 272
 export default {
     components: {
         RightTools,
