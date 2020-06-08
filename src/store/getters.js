@@ -4,12 +4,14 @@ const getters = {
     camera: (state) => state.studio.camera,
     materials: (state) => state.studio.materials,
 
-    currentOutlineItem: (state) => state.studio.currentOutlineItem,
+    currentObject: (state) => state.studio.currentObject,
+    currentMaterial: (state) => state.studio.currentMaterial,
 
     exposure: (state) => state.studio.exposure,
     gammaFactor: (state) => state.studio.gammaFactor,
 
     skyUrl: (state) => state.studio.skyUrl,
+    skyFile: (state) => state.studio.skyFile,
     skyTexture: (state) => state.studio.skyTexture,
     skyBgMode: (state) => state.studio.skyBgMode,
     skyBgColorMode: (state) => state.studio.skyBgColorMode,

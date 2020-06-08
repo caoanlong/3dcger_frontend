@@ -1,10 +1,10 @@
 <template>
     <div class="color-select">
-        <div class="color-select-block" :style="`background-color:${color}`">
+        <div class="color-select-block" :style="`background-color:${color.includes('#') ? color : '#' + color}`">
             <input 
                 class="color-select-block-input" 
                 type="color"
-                :value="color" 
+                :value="color.includes('#') ? color : '#' + color" 
                 @change="handleColorChange($event)"/>
         </div>
         <div class="color-select-label">{{label}}</div>
@@ -20,7 +20,7 @@ export default {
         },
         color: {
             type: String,
-            default: 'gray'
+            default: '#ffffff'
         }
     },
     methods: {
@@ -50,7 +50,7 @@ export default {
         height: 18px;
         line-height: 18px;
         padding: 0 5px;
-        font-size: 14px;
+        font-size: 12px;
         color: #cbcbcb;
     }
 }

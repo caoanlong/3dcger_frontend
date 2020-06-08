@@ -1,17 +1,28 @@
 <template>
-    <div class="material">
-        <div class="material-ctx" :id="'ctx' + index"></div>
-        <div class="material-name">{{material.material.type.replace(/mesh/ig, '')}}</div>
+    <div class="material" :style="`width:${SIZE}px;height:${SIZE+20}px`" @click="handleSelect">
+        <div class="material-ctx" :id="'ctx' + material.uuid" :style="`width:${SIZE}px;height:${SIZE}px`"></div>
+        <div class="material-name eclipsis">{{material.material.type.replace(/mesh/ig, '')}}</div>
+        <div class="material-top" v-if="isActive"></div>
+        <div class="material-bottom" v-if="isActive"></div>
     </div>
 </template>
 
 <script>
 import EnvironmentScene from '@/utils/EnvironmentScene'
 import { mapGetters } from 'vuex'
+const SIZE = 70
 export default {
     props: {
         material: Object,
-        index: Number
+        isActive: {
+            type: Boolean,
+            default: false
+        }
+    },
+    data() {
+        return {
+            SIZE
+        }
     },
     computed: {
         ...mapGetters(['skyTexture', 'exposure', 'gammaFactor'])
@@ -22,7 +33,7 @@ export default {
         const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000)
         camera.position.set(0, 0, 5)
 
-        renderer.setSize(107, 107)
+        renderer.setSize(SIZE, SIZE)
         renderer.setClearColor('#ffffff', 0)
         renderer.autoClear = true
         renderer.toneMappingExposure = this.exposure
@@ -32,7 +43,7 @@ export default {
         renderer.setPixelRatio(window.devicePixelRatio)
         renderer.toneMapping = THREE.ACESFilmicToneMapping
 
-        document.getElementById('ctx' + this.index).appendChild(renderer.domElement)
+        document.getElementById('ctx' + this.material.uuid).appendChild(renderer.domElement)
 
         const geometry = new THREE.SphereGeometry(1.5, 32, 32)
         const sphere = new THREE.Mesh( geometry, this.material.material )
@@ -45,16 +56,19 @@ export default {
         defaultScene.dispose()
 
         this.material.emitRender = this.material.onRender(renderer, scene, camera)
-    }
+    },
+    methods: {
+        handleSelect() {
+            this.$store.commit('setCurrentMaterial', this.material)
+        }
+    },
 }
 </script>
 
 <style lang="scss" scoped>
 .material {
-    width: 107px;
+    position: relative;
     &-ctx {
-        width: 107px;
-        height: 107px;
         background-color: #2c2c2c;
     }
     &-name {
@@ -66,6 +80,24 @@ export default {
         color: #cbcbcb;
         overflow: hidden;
         background-color: #4d4d4d;
+    }
+    &-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 2px;
+        background-color: $primary-color;
+    }
+    &-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 2px;
+        background-color: $primary-color;
     }
 }
 </style>

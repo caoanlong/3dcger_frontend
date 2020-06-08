@@ -27,9 +27,8 @@ export default {
             sceneHeight: 0,
             sceneWidth: 0,
             hdr: null,
-            // hdr: 'http://image.exposures.xyz/spruit_sunrise_1k_HDR.hdr',
-            // src: 'http://image.exposures.xyz/DamagedHelmet.gltf'
-            src: 'http://192.168.1.3:1000/test/monkey.gltf'
+            // hdr: 'http://localhost:1000/test/467138984406167552/spruit_sunrise_1k_HDR.hdr',
+            src: 'http://192.168.1.3:1000/test/467051699627110400/ishikawa.gltf'
         }
     },
     created() {

@@ -7,9 +7,13 @@
 <script>
 import EditStudio from '@/components/EditStudio'
 export default {
+    name: 'Edit',
     components: {
         EditStudio
-    }
+    },
+    destroyed() {
+        this.$store.commit('reset')
+    },
 }
 </script>
 

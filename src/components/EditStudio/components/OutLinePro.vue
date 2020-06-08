@@ -1,6 +1,6 @@
 <template>
     <div class="outline-pro" :style="{height: height + 'px'}">
-        <component v-if="currentOutlineItem" :is="OUTLINE_MAP[currentOutlineItem]"></component>
+        <component v-if="currentObject" :is="currentCom"></component>
         <NoSelection v-else/>
     </div>
 </template>
@@ -8,23 +8,17 @@
 import NoSelection from './NoSelection'
 import ScenePro from './ScenePro'
 import RenderPro from './RenderPro'
-import SkyPro from './SkyPro'
 import CameraPro from './CameraPro'
-import ModelPro from './ModelPro'
+import GroupPro from './GroupPro'
+import MeshPro from './MeshPro'
 import { mapGetters } from 'vuex'
-const OUTLINE_MAP = {
-    Scene: 'ScenePro',
-    Render: 'RenderPro',
-    Camera: 'CameraPro',
-    Sky: 'SkyPro',
-}
 export default {
     components: {
         ScenePro,
         RenderPro,
-        SkyPro,
         CameraPro,
-        ModelPro,
+        GroupPro,
+        MeshPro,
         NoSelection
     },
     props: {
@@ -33,13 +27,19 @@ export default {
             default: 350
         }
     },
-    data() {
-        return {
-            OUTLINE_MAP
-        }
-    },
     computed: {
-        ...mapGetters(['currentOutlineItem'])
+        ...mapGetters(['currentObject']),
+        currentCom() {
+            if (this.currentObject && this.currentObject.type) {
+                const type = this.currentObject.type.toLowerCase()
+                if (type.includes('scene')) return 'ScenePro'
+                if (type.includes('render')) return 'RenderPro'
+                if (type.includes('camera')) return 'CameraPro'
+                if (type.includes('group')) return 'GroupPro'
+                if (type.includes('mesh')) return 'MeshPro'
+            }
+            return 'ScenePro'
+        }
     },
 }
 </script>

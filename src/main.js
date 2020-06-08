@@ -13,6 +13,7 @@ import '@/assets/icons/index.js'
 Vue.config.productionTip = false
 
 Vue.use(Notifications)
+Vue.prototype.$staticUrl = 'http://localhost:1000/test/'
 
 new Vue({
 	router,

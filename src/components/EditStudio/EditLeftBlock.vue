@@ -1,6 +1,6 @@
 <template>
     <div class="edit-left">
-        <LeftTools/>
+        <LeftTools @save="$emit('save')"/>
         <OutLine :height="outLineHeight"/>
         <Split i="1" @change="handleSplitChange"/>
         <OutLinePro :height="height - outLineHeight - 15 - 28"/>

@@ -1,11 +1,11 @@
 <template>
-    <div class="materials" :style="{height: height + 'px'}">
+    <div class="materials clearfix" :style="{height: height + 'px'}">
         <MaterialItem 
             class="materials-item" 
             v-for="(item, i) in materials" 
             :key="i" 
             :material="item" 
-            :index="i">
+            :isActive="currentMaterial.uuid == item.uuid" >
         </MaterialItem>
     </div>
 </template>
@@ -24,7 +24,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['materials'])
+        ...mapGetters(['materials', 'currentMaterial'])
     },
 }
 </script>
@@ -33,12 +33,14 @@ export default {
 .materials {
     border: 1px solid #262626;
     padding: 5px;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    overflow: auto;
     &-item {
+        float: left;
+        margin-left: 5px;
         margin-bottom: 5px;
+        &:first-child {
+            margin-left: 0;
+        }
     }
 }
 </style>

@@ -1,9 +1,12 @@
 import axios from 'axios'
 import Vue from 'vue'
+import JSONbig from 'json-bigint'
+
 const baseURL = process.env.NODE_ENV === 'development' ? '/api' : '/'
 const service = axios.create({
     baseURL,
-    timeout: 10000
+    timeout: 15000,
+    transformResponse: data => JSONbig.parse(data)
 })
 
 service.interceptors.request.use(config => {

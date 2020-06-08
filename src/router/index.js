@@ -12,6 +12,11 @@ const routes = [
 		redirect: '/edit'
 	},
 	{
+		path: '/mine',
+		name: 'mine',
+		component: () => import('@/views/Mine')
+	},
+	{
 		path: '/edit',
 		name: 'edit',
 		component: () => import('@/views/Edit')

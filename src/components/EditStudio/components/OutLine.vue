@@ -2,68 +2,43 @@
     <div class="out-line" :style="{height: height + 'px'}">
         <div 
             class="scene" 
-            :class="{'active': currentOutlineItem == sceneLabel}" 
-            @click="handleSelect(sceneLabel)">
-            {{sceneLabel}}
+            :class="{'active': currentObject && currentObject.uuid == scene.uuid}" 
+            @click="handleSelect(scene)">
+            {{scene && (scene.name || scene.type)}}
         </div>
-        <div class="slist">
-            <div class="slist-item" 
-                :class="{'active': currentOutlineItem == renderLabel}" 
-                @click="handleSelect(renderLabel)">
-                {{renderLabel}}
-            </div>
-            <div class="slist-item" 
-                :class="{'active': currentOutlineItem == cameraLabel}" 
-                @click="handleSelect(cameraLabel)">
-                {{cameraLabel}}
-            </div>
-            <div class="slist-item" 
-                :class="{'active': currentOutlineItem == skyLabel}" 
-                @click="handleSelect(skyLabel)">
-                {{skyLabel}}
-            </div>
-            <!-- <div class="slist-item" 
-                :class="{'active': currentOutlineItem == group.type}" 
-                v-for="(group, i) in (scene ? scene.children : [])" 
-                :key="i"
-                @click="handleSelect(group.type)">
-                {{group.type}}
-            </div>
-            <div class="slist-item" 
-                :class="{'active': currentOutlineItem == mesh.type}" 
-                v-for="(mesh, j) in (scene && scene.children && scene.children.length ? scene.children[0].children[0] : [])" 
-                :key="j"
-                @click="handleSelect(mesh.type)">
-                {{mesh.type}}
-            </div> -->
+        <div class="render" 
+            :class="{'active': currentObject && (currentObject.uuid == renderer.uuid)}" 
+            @click="handleSelect(renderer)">
+            {{renderer && (renderer.name || renderer.type)}}
         </div>
+        <!-- <div class="camera" 
+            :class="{'active': currentObject && currentObject.uuid == camera.uuid}" 
+            @click="handleSelect(camera)">
+            {{camera && (camera.name || camera.type)}}
+        </div> -->
+        <ModelItem :model="scene.children[0]" v-if="scene && scene.children && scene.children[0]"/>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import ModelItem from './ModelItem'
 export default {
+    components: {
+        ModelItem
+    },
     props: {
         height: {
             type: Number,
             default: 250
         }
     },
-    data() {
-        return {
-            sceneLabel: 'Scene',
-            renderLabel: 'Render',
-            cameraLabel: 'Camera',
-            skyLabel: 'Sky',
-            modelLabel: 'Model',
-        }
-    },
     computed: {
-        ...mapGetters(['scene', 'currentOutlineItem'])
+        ...mapGetters(['scene', 'renderer', 'camera', 'currentObject'])
     },
     methods: {
-        handleSelect(label) {
-            this.$store.commit('setCurrentOutlineItem', label)
+        handleSelect(obj) {
+            this.$store.commit('setCurrentObject', obj)
         }
     },
 }
@@ -72,13 +47,12 @@ export default {
 <style lang="scss" scoped>
 .out-line {
     border: 1px solid #262626;
-    background-image: linear-gradient(0deg, #383838 92%, #2f2f2f 8%);
-    background-size: 100% 20px;
-    overflow: hidden;
+    overflow: auto;
     .active {
         background-color: #737373;
     }
-    .scene {
+    .scene, .render, .camera, .sky {
+        border-top: 1px solid #222222;
         height: 20px;
         line-height: 20px;
         color: #cbcbcb;
@@ -90,14 +64,18 @@ export default {
         }
         &:before {
             position: absolute;
-            top: 8px;
-            left: 3px;
+            top: 6px;
+            left: 4px;
             display: block;
             content: "";
-            width: 6px;
-            height: 6px;
-            border-top: 2px solid #dddddd;
+            width: 4px;
+            height: 4px;
+            border-left: 1px solid #999999;
+            border-bottom: 1px solid #999999;
         }
+    }
+    .scene {
+        border-top: none;
     }
     .slist {
         color: #cbcbcb;
