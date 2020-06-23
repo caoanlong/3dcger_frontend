@@ -1,7 +1,10 @@
 const getters = {
+    width: (state) => state.studio.width,
+    height: (state) => state.studio.height,
     scene: (state) => state.studio.scene,
     renderer: (state) => state.studio.renderer,
     camera: (state) => state.studio.camera,
+    renderTarget: (state) => state.studio.renderTarget,
     materials: (state) => state.studio.materials,
 
     currentObject: (state) => state.studio.currentObject,

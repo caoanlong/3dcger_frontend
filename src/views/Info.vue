@@ -28,7 +28,9 @@ export default {
             sceneWidth: 0,
             hdr: null,
             // hdr: 'http://localhost:1000/test/467138984406167552/spruit_sunrise_1k_HDR.hdr',
-            src: 'http://192.168.1.3:1000/test/467051699627110400/ishikawa.gltf'
+            // src: 'http://192.168.1.3:1000/test/467051699627110400/ishikawa.gltf'
+            // src: 'http://192.168.1.3:1000/test/467138984406167552/hat.gltf'
+            src: 'http://192.168.1.3:1000/test/466685065607524352/monkey.gltf'
         }
     },
     created() {

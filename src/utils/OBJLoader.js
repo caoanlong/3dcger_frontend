@@ -1,7 +1,7 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  */
-
+import THREE from '@/utils/three.module'
 THREE.OBJLoader = ( function () {
 
 	// o object_name | g group_name

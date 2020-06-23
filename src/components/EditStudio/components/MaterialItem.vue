@@ -1,13 +1,14 @@
 <template>
     <div class="material" :style="`width:${SIZE}px;height:${SIZE+20}px`" @click="handleSelect">
         <div class="material-ctx" :id="'ctx' + material.uuid" :style="`width:${SIZE}px;height:${SIZE}px`"></div>
-        <div class="material-name eclipsis">{{material.material.type.replace(/mesh/ig, '')}}</div>
+        <div class="material-name eclipsis">{{material.material.type.replace(/mesh|material/ig, '')}}</div>
         <div class="material-top" v-if="isActive"></div>
         <div class="material-bottom" v-if="isActive"></div>
     </div>
 </template>
 
 <script>
+import THREE from '@/utils/three.module'
 import EnvironmentScene from '@/utils/EnvironmentScene'
 import { mapGetters } from 'vuex'
 const SIZE = 70
@@ -75,6 +76,7 @@ export default {
         height: 20px;
         height: 20px;
         line-height: 20px;
+        text-align: center;
         padding: 0 2px;
         font-size: 12px;
         color: #cbcbcb;

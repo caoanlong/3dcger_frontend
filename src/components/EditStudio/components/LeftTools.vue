@@ -18,9 +18,11 @@
 </template>
 
 <script>
+import THREE from '@/utils/three.module'
 import Btn from './Btn'
 import { mapGetters } from 'vuex'
-import { material }  from '@/utils/common'
+import { createMaterial }  from '@/utils/common'
+const DEFAULT_MTL_TYPE = 'physical'
 export default {
     components: {
         Btn
@@ -31,7 +33,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['materials'])
+        ...mapGetters(['materials', 'renderer', 'skyTexture', 'width', 'height'])
     },
     created() {
         if (this.$route.query.id) this.isDisabled = true
@@ -54,11 +56,16 @@ export default {
         walk(group) {
             for (let i = 0; i < group.children.length; i++) {
                 const item = group.children[i]
-                const mtl = material.clone()
                 if (item.type === 'Mesh') {
+                    const mtl = createMaterial(DEFAULT_MTL_TYPE)
                     mtl.geoName = item.name
                     item.material = mtl
-                    this.$store.commit('setMaterial', {uuid: item.uuid, material: mtl })
+                    this.$store.commit('setMaterial', {
+                        uuid: item.uuid,
+                        obj: item,
+                        mtlType: DEFAULT_MTL_TYPE,
+                        material: mtl 
+                    })
                 }
                 if (item.children && item.children.length && item.type != 'LineSegments') {
                     this.walk(item)

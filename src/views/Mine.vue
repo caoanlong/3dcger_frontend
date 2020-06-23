@@ -26,6 +26,7 @@
 
 <script>
 import Scene from '@/api/Scene'
+import request from '@/utils/request'
 export default {
     data() {
         return {
@@ -38,7 +39,6 @@ export default {
     methods: {
         getList() {
             Scene.findList().then(res => {
-                console.log(res.list)
                 this.list = res.list
             })
         },

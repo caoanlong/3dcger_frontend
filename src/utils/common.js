@@ -1,3 +1,6 @@
+import THREE from '@/utils/three.module'
+import RefracMaterial from '@/utils/RefracMaterial'
+import store from '@/store'
 const DEFAULT_FOV_DEG = 45
 export const DEFAULT_TAN_FOV = Math.tan((DEFAULT_FOV_DEG / 2) * Math.PI / 180)
 const DEFAULT_HALF_FOV = (DEFAULT_FOV_DEG / 2) * Math.PI / 180
@@ -11,15 +14,28 @@ export function formDataReq(json) {
     return formData
 }
 
-export const material = new THREE.MeshStandardMaterial({
-    metalness: 1,
-    roughness: 0,
-    aoMapIntensity: 0.2,
-    transparent: true,
-    polygonOffset: true,
-    polygonOffsetFactor: 1, // positive value pushes polygon further away
-    polygonOffsetUnits: 1
-})
+export const createMaterial = (type) => {
+    if (type === 'physical') {
+        return new THREE.MeshPhysicalMaterial({
+            metalness: 1,
+            roughness: 0,
+            aoMapIntensity: 0.2,
+            transparent: true,
+            polygonOffset: true,
+            polygonOffsetFactor: 1, // positive value pushes polygon further away
+            polygonOffsetUnits: 1,
+            alphaTest: 0.5
+        })
+    } else if (type === 'refraction') {
+        return new RefracMaterial({
+            metalness: 1,
+            roughness: 0,
+            refractionRatio: 0.7,
+            envMap: store.getters.skyTexture,
+            envMapMode: THREE.EquirectangularRefractionMapping
+        })
+    }
+}
 
 export function setMap(url, curMtl, prop, type) {
     if (type === 'tga') {

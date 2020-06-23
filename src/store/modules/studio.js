@@ -1,3 +1,4 @@
+import THREE from '@/utils/three.module'
 import EnvironmentScene from '@/utils/EnvironmentScene'
 import '@/utils/RGBELoader'
 
@@ -15,21 +16,30 @@ function setSky(state, url) {
     const rgbeLoader = new THREE.RGBELoader().setDataType(THREE.UnsignedByteType)
     rgbeLoader.load(url, (hdrTexture, data) => {
         hdrTexture.encoding = THREE.RGBEEncoding
-        hdrTexture.minFilter = THREE.NearestFilter
-        hdrTexture.magFilter = THREE.NearestFilter
+        hdrTexture.minFilter = THREE.LinearFilter
+        hdrTexture.magFilter = THREE.LinearFilter
         hdrTexture.flipY = true
         const pmremGenerator = new THREE.PMREMGenerator(state.renderer)
         const texture = pmremGenerator.fromEquirectangular(hdrTexture).texture
-        state.skyTexture = state.scene.environment = texture
+        state.skyTexture = texture
+        state.scene.environment = texture
         if (state.skyBgMode === 'Sky') state.scene.background = texture
+        // TODO
+        for (let i = 0; i < state.materials.length; i++) {
+            const material = state.materials[i].material
+            if (material.envMap) material.envMap = texture
+        }
     })
 }
 
 const studio = {
     state: {
+        width: 0,
+        height: 0,
         scene: null,
         renderer: null,
         camera: null,
+        renderTarget: null,
 
         materials: [],
 
@@ -78,17 +88,22 @@ const studio = {
             state.near = 0.1
             state.far = 10000
         },
-        init: (state, { el, width, height }) => {
+        init: (state, { el }) => {
             state.scene = new THREE.Scene()
+
+            // const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            // directionalLight.position.set(0.0, 0.5, 0.5).normalize();
+            // state.scene.add(directionalLight);
+
             state.renderer = new THREE.WebGLRenderer({
                 preserveDrawingBuffer: true,  //将渲染保存到缓冲区，否则获取的图片会是空的
                 antialias: true, 
                 alpha: true 
             })
-            state.camera = new THREE.PerspectiveCamera(state.fov, width/height, state.near, state.far)
+            state.camera = new THREE.PerspectiveCamera(state.fov, state.width / state.height, state.near, state.far)
             state.camera.position.set(0, 0, 5)
 
-            state.renderer.setSize(width, height)
+            state.renderer.setSize(state.width, state.height)
             state.renderer.setClearColor('#ffffff', 0)
             state.renderer.autoClear = true;
             state.renderer.toneMappingExposure = state.exposure
@@ -109,10 +124,15 @@ const studio = {
 
             const defaultScene = new EnvironmentScene()
             const defaultEnvTextture = pmremGenerator.fromScene(defaultScene, 0.04).texture
-            state.skyTexture = state.scene.environment = defaultEnvTextture
+            state.skyTexture = defaultEnvTextture
+            state.scene.environment = defaultEnvTextture
             defaultScene.dispose()
 
             state.currentObject = state.scene
+        },
+        setSize: (state, {width, height}) => {
+            state.width = width
+            state.height = height
         },
         addMesh: (state, mesh) => {
             // state.scene.children = []  // 临时
@@ -208,7 +228,7 @@ const studio = {
             state.camera.far = far
             state.camera.updateProjectionMatrix()
         },
-        setMaterial: (state, { uuid, material, materialProp}) => {
+        setMaterial: (state, { uuid, obj, mtlType, material, materialProp}) => {
             const props = {
                 id: '',
                 colorMapName: '',
@@ -222,9 +242,7 @@ const studio = {
                 aoMapName: '',
                 aoMapUrl: '',
                 emissiveMapName: '',
-                emissiveMapUrl: '',
-                alphaMapName: '',
-                alphaMapUrl: ''
+                emissiveMapUrl: ''
             }
             if (materialProp) {
                 props.id = materialProp.id || ''
@@ -240,11 +258,11 @@ const studio = {
                 props.aoMapUrl = materialProp.aoMapUrl || ''
                 props.emissiveMapName = materialProp.emissiveMapName || ''
                 props.emissiveMapUrl = materialProp.emissiveMapUrl || ''
-                props.alphaMapName = materialProp.alphaMapName || ''
-                props.alphaMapUrl = materialProp.alphaMapUrl || ''
             }
             state.materials.push({
                 uuid,
+                obj,
+                mtlType,
                 material,
                 ...props,
                 onRender: (renderer, scene, camera) => {

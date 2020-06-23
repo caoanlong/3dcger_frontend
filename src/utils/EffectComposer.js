@@ -1,7 +1,7 @@
 /**
  * @author alteredq / http://alteredqualia.com/
  */
-
+import THREE from '@/utils/three.module'
 THREE.EffectComposer = function ( renderer, renderTarget ) {
 
 	this.renderer = renderer;

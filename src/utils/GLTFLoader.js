@@ -5,7 +5,7 @@
  * @author Takahiro / https://github.com/takahirox
  * @author Don McCurdy / https://www.donmccurdy.com
  */
-
+import THREE from '@/utils/three.module'
 THREE.GLTFLoader = ( function () {
 
 	function GLTFLoader( manager ) {

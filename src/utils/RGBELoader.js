@@ -4,7 +4,7 @@
 
 // https://github.com/mrdoob/three.js/issues/5552
 // http://en.wikipedia.org/wiki/RGBE_image_format
-
+import THREE from '@/utils/three.module'
 THREE.RGBELoader = function ( manager ) {
 
 	THREE.DataTextureLoader.call( this, manager );
@@ -400,7 +400,7 @@ THREE.RGBELoader.prototype = Object.assign( Object.create( THREE.DataTextureLoad
 		if ( RGBE_RETURN_FAILURE !== rgbe_header_info ) {
 
 			var w = rgbe_header_info.width,
-				h = rgbe_header_info.height
+				h = rgbe_header_info.height,
 				image_rgba_data = RGBE_ReadPixels_RLE( byteArray.subarray( byteArray.pos ), w, h );
 
 			if ( RGBE_RETURN_FAILURE !== image_rgba_data ) {

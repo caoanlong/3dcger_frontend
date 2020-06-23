@@ -1,6 +1,16 @@
 <template>
     <div class="materials-pro" :style="{height: height + 'px'}">
         <template v-if="currentMaterial">
+            <Fold label="Type" :visible="isTypeShow" @click="handleTypeFold">
+                <div class="type" v-show="isTypeShow">
+                    <LabelSelectList 
+                        label="Material Type" 
+                        :list="['physical', 'refraction']" 
+                        :current="currentMaterial.mtlType" 
+                        @change="handleTypeChange">
+                    </LabelSelectList>
+                </div>
+            </Fold>
             <Fold label="Color" :visible="isColorShow" @click="handleColorFold">
                 <div class="color" v-show="isColorShow">
                     <TextureUnit 
@@ -11,7 +21,7 @@
                     </TextureUnit>
                     <ColorSelect 
                         style="margin-top: 5px"
-                        :color="currentMaterial.material.color.getHexString()" 
+                        :color="currentMaterial.material.color && currentMaterial.material.color.getHexString()" 
                         @change="handleColorChange">
                     </ColorSelect>
                 </div>
@@ -84,7 +94,7 @@
                     </TextureUnit>
                     <ColorSelect 
                         style="margin-top: 5px"
-                        :color="currentMaterial.material.emissive.getHexString()" 
+                        :color="currentMaterial.material.emissive && currentMaterial.material.emissive.getHexString()" 
                         @change="handleEmissiveChange">
                     </ColorSelect>
                     <SliderItem 
@@ -95,14 +105,24 @@
                     </SliderItem>
                 </div>
             </Fold>
-            <Fold label="Alpha" :visible="isAlphaShow" @click="handleAlphaFold">
-                <div class="alpha" v-show="isAlphaShow">
-                    <TextureUnit 
-                        label="Alpha Map" 
-                        :mapName="currentMaterial.alphaMapName" 
-                        :mapUrl="currentMaterial.alphaMapUrl" 
-                        @img-change="handleAlphaMapChange">
-                    </TextureUnit>
+            <Fold label="Transparency" :visible="isTransparencyShow" @click="handleTransparencyFold">
+                <div class="transparency" v-show="isTransparencyShow">
+                    <SliderItem 
+                        :value="currentMaterial.material.transparency" 
+                        label="Transparency" 
+                        :max="1"
+                        @change="handleTransparencyChange">
+                    </SliderItem>
+                </div>
+            </Fold>
+            <Fold label="Reflectivity" :visible="isReflectivityShow" @click="handleReflectivityFold">
+                <div class="reflectivity" v-show="isReflectivityShow">
+                    <SliderItem 
+                        :value="currentMaterial.material.reflectivity" 
+                        label="Reflectivity" 
+                        :max="1"
+                        @change="handleReflectivityChange">
+                    </SliderItem>
                 </div>
             </Fold>
         </template>
@@ -115,15 +135,17 @@ import Fold from './Fold'
 import SliderItem from './SliderItem'
 import TextureUnit from './TextureUnit'
 import ColorSelect from './ColorSelect'
+import LabelSelectList from './LabelSelectList'
 import { mapGetters } from 'vuex'
-import { setMap, getFileSuffixByName } from '@/utils/common'
+import { setMap, getFileSuffixByName, createMaterial } from '@/utils/common'
 export default {
     components: {
         NoSelection,
         Fold,
         SliderItem,
         TextureUnit,
-        ColorSelect
+        ColorSelect,
+        LabelSelectList
     },
     props: {
         height: {
@@ -133,19 +155,24 @@ export default {
     },
     data() {
         return {
+            isTypeShow: true,
             isColorShow: true,
             isMetalnessShow: true,
             isRoughnessShow: true,
             isNormalShow: true,
             isAoShow: true,
             isEmissiveShow: true,
-            isAlphaShow: true
+            isTransparencyShow: true,
+            isReflectivityShow: true
         }
     },
     computed: {
         ...mapGetters(['materials', 'currentMaterial'])
     },
     methods: {
+        handleTypeFold(bool) {
+            this.isTypeShow = bool
+        },
         handleColorFold(bool) {
             this.isColorShow = bool
         },
@@ -164,8 +191,21 @@ export default {
         handleEmissiveFold(bool) {
             this.isEmissiveShow = bool
         },
-        handleAlphaFold(bool) {
-            this.isAlphaShow = bool
+        handleTransparencyFold(bool) {
+            this.isTransparencyShow = bool
+        },
+        handleReflectivityFold(bool) {
+            this.isReflectivityShow = bool
+        },
+        handleTypeChange(type) {
+            this.currentMaterial.mtlType = type
+            const geoName = this.currentMaterial.material.geoName
+            const mtl = createMaterial(type)
+            mtl.geoName = geoName
+            this.$set(this.currentMaterial, 'material', mtl)
+            this.$set(this.currentMaterial.obj, 'material', mtl)
+            // this.currentMaterial.material = mtl
+            // this.currentMaterial.obj.material = mtl
         },
         handleColorChange(color) {
             this.currentMaterial.material.color.set(color)
@@ -269,20 +309,12 @@ export default {
         handleEmissiveIntensityChange(value) {
             this.currentMaterial.material.emissiveIntensity = value
         },
-        handleAlphaMapChange(file) {
-            if (file) {
-                this.currentMaterial.alphaMapFile = file
-                this.currentMaterial.alphaMapName = file.name
-                this.currentMaterial.alphaMapUrl = window.URL.createObjectURL(file)
-                setMap(this.currentMaterial.alphaMapUrl, this.currentMaterial, 'alphaMap', getFileSuffixByName(file.name))
-            } else {
-                this.currentMaterial.alphaMapFile = null
-                this.currentMaterial.alphaMapName = ''
-                this.currentMaterial.alphaMapUrl = ''
-                this.currentMaterial.material.alphaMap = null
-                this.currentMaterial.material.needsUpdate = true
-            }
+        handleTransparencyChange(value) {
+            this.currentMaterial.material.transparency = value
         },
+        handleReflectivityChange(value) {
+            this.currentMaterial.material.reflectivity = value
+        }
     },
 }
 </script>
@@ -291,6 +323,9 @@ export default {
     overflow: auto;
     border: 1px solid #262626;
     background-color: #383838;
+    .type {
+        padding: 10px 5px;
+    }
     .color {
         padding: 5px;
     }
@@ -309,7 +344,7 @@ export default {
     .emissive {
         padding: 5px;
     }
-    .alpha {
+    .transparency {
         padding: 5px;
     }
 }

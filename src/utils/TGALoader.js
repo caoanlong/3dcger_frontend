@@ -3,7 +3,7 @@
  * @author mrdoob / http://mrdoob.com/
  * @author takahirox / https://github.com/takahirox/
  */
-
+import THREE from '@/utils/three.module'
 THREE.TGALoader = function ( manager ) {
 
 	THREE.Loader.call( this, manager );

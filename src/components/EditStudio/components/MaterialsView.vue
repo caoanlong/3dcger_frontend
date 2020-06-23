@@ -36,10 +36,10 @@ export default {
     overflow: auto;
     &-item {
         float: left;
-        margin-left: 5px;
+        margin-right: 5px;
         margin-bottom: 5px;
-        &:first-child {
-            margin-left: 0;
+        &:nth-child(3n) {
+            margin-right: 0;
         }
     }
 }

@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import THREE from '@/utils/three.module'
 import EditLeftBlock from './EditLeftBlock'
 import EditRightBlock from './EditRightBlock'
 import { mapGetters } from 'vuex'
@@ -26,14 +27,14 @@ export default {
     },
     data() {
         return {
-            height: 0,
-            width: 0,
             aspect: 1,
             fileUrls: ''
         }
     },
     computed: {
         ...mapGetters([
+            'width',
+            'height',
             'scene', 
             'renderer', 
             'camera', 
@@ -67,9 +68,10 @@ export default {
         resizeWin() {
             const view = document.getElementById('view')
             if (view) {
-                this.width = view.offsetWidth
-                this.height = window.innerHeight - 100
-                this.aspect = this.width / this.height
+                const width = view.offsetWidth
+                const height = window.innerHeight - 100
+                this.$store.commit('setSize', { width, height })
+                this.aspect = width / height
             }
             if (this.camera) {
                 this.camera.aspect = this.aspect
@@ -185,6 +187,7 @@ export default {
                     const fileUrl = baseUrl + this.fileUrls[i]
                     const objLoader = new THREE.OBJLoader()
                     objLoader.load(fileUrl, (group) => {
+                        console.log(group)
                         group.cgersFileUrl = fileUrl
                         this.walk(group, res.materials, baseUrl)
                         this.$store.commit('addMesh', group)
@@ -245,7 +248,14 @@ export default {
                         setMap(baseUrl + mt.alphaMapUrl, mtl, 'alphaMap', getFileSuffixByName(mt.alphaMapUrl))
                     }
                     item.material = mtl
-                    this.$store.commit('setMaterial', {uuid: item.uuid, material: mtl, materialProp })
+                    // TODO   mtlType: 'physical'
+                    this.$store.commit('setMaterial', {
+                        uuid: item.uuid, 
+                        obj: item, 
+                        mtlType: 'physical', 
+                        material: mtl, 
+                        materialProp 
+                    })
                 }
                 if (item.children && item.children.length && item.type != 'LineSegments') {
                     this.walk(item, materials, baseUrl)

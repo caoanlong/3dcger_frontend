@@ -73,7 +73,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 // // End of OpenEXR license -------------------------------------------------
-
+import THREE from '@/utils/three.module'
 THREE.EXRLoader = function ( manager ) {
 
 	THREE.DataTextureLoader.call( this, manager );

@@ -1,3 +1,5 @@
+import THREE from '@/utils/three.module'
+
 export default class EnvironmentScene extends THREE.Scene {
 	constructor() {
 		super()
